@@ -1,5 +1,5 @@
 close all
-tmp = bpElbow(1:10000);
+tmp = bpElbow(1:100000);
 tmp = sigfilter(tmp);
 tmp=tmp(1000:end);
 
@@ -48,4 +48,4 @@ end
 
 %%步骤4：使用小波变换估计重博波与降中峡的位置
 %
-[dicpeaks,dicnotchs] = tmpFunc(data,peaks,[]);
+[dicpeaks,dicnotchs] = tmpFunc(data,peak,[]);
