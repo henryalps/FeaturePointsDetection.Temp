@@ -1,5 +1,5 @@
 close all
-tmp = bpWrist(1:100000);
+tmp = bpElbow(1:10000);
 tmp = sigfilter(tmp);
 tmp=tmp(1000:end);
 
