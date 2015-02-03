@@ -1,10 +1,9 @@
 close all
-% tmp = bpElbow(1:100000);
-% tmp = sigfilter(tmp);
-% tmp=tmp(1000:end);
-% 
-% data=tmp/max(tmp);
-data=bpElbow;
+tmp = bpElbow;
+tmp = sigfilter(tmp);
+tmp=tmp(1000:end);
+
+data=tmp/max(tmp);
 len = length(data);
 maxLenRet = ceil(len / 300);
 peak = zeros(maxLenRet, 2);
