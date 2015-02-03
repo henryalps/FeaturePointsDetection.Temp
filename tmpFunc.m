@@ -3,8 +3,8 @@ function [dicNotchs,dicPeaks] = tmpFunc(data,peaks,notchs)
 peaks=peaks(peaks(:,1)~=0,:);
 dicNotchs=peaks;
 dicPeaks=peaks;
-plotOrNot = 1;
-complex =1;
+plotOrNot = 0;
+complex =0;
 n=10;%差分阶数
 calcDxOrNot=0;%作小波变换前是否对原始信号做差分
 diffOrNot = 0;%是否对小波系数求差分
@@ -82,16 +82,37 @@ if plotOrNot == 1
     hold on
 end
 pos = pos*resampleInterval;
-for i=1:length(peaks(:,1))
-    % 找到peaks后第一个data与x轴的交点
-    pointPos=find(data(peaks(i,1):end)<0,1);
-    % 找到该交点后离这个交点最近的3个小波过0点及其对应的位置
-    tmp=pos-(peaks(i,1)+pointPos);
-    ppos = find(tmp>0,1);
-    if ppos<=length(pos)-2
-        dicNotchs(i,:) = [pos(ppos),data(pos(ppos))];
-        dicPeaks(i,:) = [pos(ppos+2),data(pos(ppos+2))];
+for i=1:length(peaks(:,1))-1
+%     % 找到peaks后第一个data与x轴的交点
+%     pointPos=find(data(peaks(i,1):end)<0,1);
+%     % 找到该交点后离这个交点最近的3个小波过0点及其对应的位置
+%     tmp=pos-(peaks(i,1)+pointPos);
+%     ppos = find(tmp>0,1);
+%     if ppos<=length(pos)-2
+%         dicNotchs(i,:) = [pos(ppos),data(pos(ppos))];
+%         dicPeaks(i,:) = [pos(ppos+2),data(pos(ppos+2))];
+%     end
+%   先拆分信号，再做小波变换
+    dataPart = data(peaks(i,1):peaks(i+1,1));
+%   信号段重采样与归一化 
+    dataPart = downsample(dataPart,resampleInterval);
+    dataPart = dataPart/max(abs(dataPart));
+%   求小波变换
+    wlp = cwt(dataPart,scale,'cgau2');
+    wlp = abs(wlp).^2;
+    wlp = diff(wlp);
+    wlp = wlp/max(abs(wlp));    
+ %% 求小波变换的过零点
+    pos = findPassZeroPointPos(wlp);  
+%   绘图
+    close all
+    plot(dataPart);
+    hold on
+    plot(wlp,'r');
+    for j=1:length(pos)
+        line([pos(j),pos(j)],[-1,1],'color','k');
     end
+    
     if plotOrNot == 1
         plot(dicNotchs(i,1),dicNotchs(i,2),'ro');
         plot(dicPeaks(i,1),dicPeaks(i,2),'go');
