@@ -1,5 +1,6 @@
 function [dicNotchs,dicPeaks] = tmpFunc(data,peaks,notchs)
 %%预定义
+peaks=peaks(peaks(:,1)~=0,:);
 dicNotchs=peaks;
 dicPeaks=peaks;
 plotOrNot = 1;
@@ -10,7 +11,7 @@ diffOrNot = 0;%是否对小波系数求差分
 resampleOrNot = 1;%是否减采样
 resampleInterval = 10;%减采样周期
 scale = 4;
-shiftFactor = 0.0;
+shiftFactor = 0.1;
 data = data - shiftFactor;
 %% 减采样
 if resampleOrNot == 1 && length(data)>resampleInterval
